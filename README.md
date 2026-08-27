@@ -1,6 +1,6 @@
 # SpaceTake GS public website (`Jeprary/spacetakeGS-web`)
 
-Status: **prototype / NOT PUBLISHED / NOT A PRODUCT RELEASE**.
+Status: **public website prototype / NOT A PRODUCT RELEASE**.
 
 This website-owned Vite project builds a static GitHub Pages candidate. It has
 no backend, analytics, cookies, bundled raw camera media, or dependency on
@@ -41,11 +41,11 @@ preview is shipped as `public/reconstruction-preview.jpg` and is included in the
 standalone public-source allowlist; no raw capture or private machine path is
 bundled.
 
-The embedded official SuperSplat Viewer begins loading SOG content when it is
-within 700 px of the viewport and retains the package's Orbit/Fly controls. The
-existing SparkJS viewer remains a fallback for its supported local formats.
-Production builds may set `VITE_PUBLIC_GAUSSIAN_URL` only to a public
-Hugging Face Model repository asset pinned with a 40-character commit in the
-`/resolve/<commit>/...` path. `VITE_PUBLIC_GAUSSIAN_LABEL` supplies its public
-display name. Without that reviewed URL the viewer fails closed to an honest
-empty state. The homepage does not expose a local-file chooser.
+The embedded official SuperSplat Viewer begins loading the reviewed 4.97M SH3
+SOG reconstruction when it is within 700 px of the viewport and retains the
+package's Orbit/Fly controls. The SOG identity and public-display boundary are
+recorded in `ASSETS.md` and `public/GAUSSIAN-ASSET-NOTICE.txt`; its source PLY
+and private evidence are not published. The existing SparkJS viewer remains a
+fallback for its supported local formats. A production override may use only a
+public Hugging Face Model repository asset pinned with a 40-character commit in
+the `/resolve/<commit>/...` path. The homepage exposes no local-file chooser.

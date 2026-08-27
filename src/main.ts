@@ -66,9 +66,12 @@ let disposeViewer: (() => void) | undefined;
 let viewerRequest = 0;
 let publicSceneAttempted = false;
 
+const bundledPublicScenePath = `${import.meta.env.BASE_URL}assets/x5-tunnel-mrnf-ppisp-sh3-4m97-aligned.sog`;
+const bundledPublicSceneUrl = new URL(bundledPublicScenePath, window.location.origin);
+const configuredPublicSceneUrl = import.meta.env.VITE_PUBLIC_GAUSSIAN_URL?.trim() ?? "";
 const publicScene = {
-  url: import.meta.env.VITE_PUBLIC_GAUSSIAN_URL?.trim() ?? "",
-  label: import.meta.env.VITE_PUBLIC_GAUSSIAN_LABEL?.trim() || "SpaceTake GS reconstruction",
+  url: configuredPublicSceneUrl || bundledPublicSceneUrl.href,
+  label: import.meta.env.VITE_PUBLIC_GAUSSIAN_LABEL?.trim() || "SpaceTake GS 4.97M SH3 reconstruction",
 };
 const lockedHuggingFaceAsset =
   /^https:\/\/huggingface\.co\/[^/\s]+\/[^/\s]+\/resolve\/[0-9a-f]{40}\/[^?#\s]+(?:\?download=true)?$/iu;
@@ -103,7 +106,8 @@ const selectScene = () => {
     return { url: url.href, ...localScene };
   }
 
-  if (!publicScene.url || !lockedHuggingFaceAsset.test(publicScene.url)) return;
+  const isBundledPublicScene = publicScene.url === bundledPublicSceneUrl.href;
+  if (!isBundledPublicScene && !lockedHuggingFaceAsset.test(publicScene.url)) return;
   const path = new URL(publicScene.url).pathname.toLowerCase();
   const viewer: ViewerKind = path.endsWith(".sog") ? "supersplat" : "spark";
   return { ...publicScene, viewer };

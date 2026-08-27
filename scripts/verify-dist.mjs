@@ -1,11 +1,22 @@
+import { createReadStream } from "node:fs";
 import { readdir, readFile, stat } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { extname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../dist/", import.meta.url));
-const allowed = new Set([".html", ".css", ".js", ".jpg", ".png", ".txt", ".webmanifest"]);
+const allowed = new Set([".html", ".css", ".js", ".jpg", ".png", ".sog", ".txt", ".webmanifest"]);
+const bundledGaussianPath = "assets/x5-tunnel-mrnf-ppisp-sh3-4m97-aligned.sog";
+const bundledGaussianBytes = 67_111_473;
+const bundledGaussianSha256 = "f1aaf327df2d68d4edb342da1bcf601d9ce32459eb4fdea1f6d2140da455fdef";
 let totalBytes = 0;
 const paths = [];
+
+async function sha256(path) {
+  const hash = createHash("sha256");
+  for await (const chunk of createReadStream(path)) hash.update(chunk);
+  return hash.digest("hex");
+}
 
 async function walk(directory) {
   for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -16,10 +27,14 @@ async function walk(directory) {
       continue;
     }
     const suffix = extname(entry.name);
+    const relativePath = relative(root, path);
     if (!allowed.has(suffix)) throw new Error(`Unexpected Pages artifact type: ${path}`);
+    if (suffix === ".sog" && relativePath !== bundledGaussianPath) {
+      throw new Error(`Unexpected Gaussian artifact: ${relativePath}`);
+    }
     const info = await stat(path);
     totalBytes += info.size;
-    paths.push(relative(root, path));
+    paths.push(relativePath);
     if ([".html", ".css", ".js", ".txt"].includes(suffix)) {
       const text = await readFile(path, "utf8");
       for (const pattern of [/\/mnt\//i, /\/home\//i, /[A-Z]:\\\\[A-Za-z0-9._ -]{2,}\\\\/]) {
@@ -31,8 +46,18 @@ async function walk(directory) {
 
 await walk(root);
 if (!paths.includes("index.html")) throw new Error("dist/index.html is missing");
-if (totalBytes > 10 * 1024 * 1024) {
-  throw new Error(`Static artifact exceeds the 10 MiB prototype budget: ${totalBytes}`);
+if (!paths.includes(bundledGaussianPath)) throw new Error("bundled Gaussian artifact is missing");
+const bundledGaussianAbsolutePath = join(root, bundledGaussianPath);
+const bundledGaussianInfo = await stat(bundledGaussianAbsolutePath);
+if (bundledGaussianInfo.size !== bundledGaussianBytes) {
+  throw new Error(`bundled Gaussian size mismatch: ${bundledGaussianInfo.size}`);
+}
+const bundledGaussianDigest = await sha256(bundledGaussianAbsolutePath);
+if (bundledGaussianDigest !== bundledGaussianSha256) {
+  throw new Error(`bundled Gaussian SHA-256 mismatch: ${bundledGaussianDigest}`);
+}
+if (totalBytes > 80 * 1024 * 1024) {
+  throw new Error(`Static artifact exceeds the 80 MiB embedded-viewer budget: ${totalBytes}`);
 }
 
 console.log(`Pages artifact gate passed: ${paths.length} files, ${totalBytes} bytes.`);

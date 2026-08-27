@@ -1,4 +1,6 @@
+import { createReadStream } from "node:fs";
 import { lstat, readFile } from "node:fs/promises";
+import { createHash } from "node:crypto";
 import { extname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -14,7 +16,16 @@ const failures = [];
 const seen = new Set();
 let projectLicense;
 const textSuffixes = new Set([".css", ".html", ".js", ".json", ".md", ".mjs", ".ts", ".txt", ".webmanifest", ".yml"]);
-const allowedSuffixes = new Set([...textSuffixes, ".jpg", ".png"]);
+const allowedSuffixes = new Set([...textSuffixes, ".jpg", ".png", ".sog"]);
+const bundledGaussianPath = "public/assets/x5-tunnel-mrnf-ppisp-sh3-4m97-aligned.sog";
+const bundledGaussianBytes = 67_111_473;
+const bundledGaussianSha256 = "f1aaf327df2d68d4edb342da1bcf601d9ce32459eb4fdea1f6d2140da455fdef";
+
+async function sha256(path) {
+  const hash = createHash("sha256");
+  for await (const chunk of createReadStream(path)) hash.update(chunk);
+  return hash.digest("hex");
+}
 const secretPatterns = [
   ["GitHub classic token", new RegExp(["gh", "p_", "[A-Za-z0-9]{20,}"].join(""), "u")],
   ["GitHub fine-grained token", new RegExp(["github", "_pat_", "[A-Za-z0-9_]{20,}"].join(""), "u")],
@@ -60,7 +71,19 @@ for (const relativePath of allowlist) {
   ) {
     failures.push(`unsupported public-source file type: ${relativePath}`);
   }
-  if (info.size > 1024 * 1024) failures.push(`public-source file exceeds 1 MiB: ${relativePath}`);
+  const isBundledGaussian = relativePath === bundledGaussianPath;
+  if (info.size > 1024 * 1024 && !isBundledGaussian) {
+    failures.push(`public-source file exceeds 1 MiB: ${relativePath}`);
+  }
+  if (isBundledGaussian) {
+    if (info.size !== bundledGaussianBytes) {
+      failures.push(`bundled Gaussian size mismatch: ${info.size}`);
+    }
+    const digest = await sha256(absolutePath);
+    if (digest !== bundledGaussianSha256) {
+      failures.push(`bundled Gaussian SHA-256 mismatch: ${digest}`);
+    }
+  }
 
   if (textSuffixes.has(extname(relativePath)) || relativePath === ".gitignore" || relativePath === "LICENSE") {
     const content = await readFile(absolutePath, "utf8");
@@ -99,6 +122,8 @@ for (const required of [
   "[0-9a-f]{40}",
   "IntersectionObserver",
   'rootMargin: "700px 0px"',
+  "bundledPublicSceneUrl.href",
+  "assets/x5-tunnel-mrnf-ppisp-sh3-4m97-aligned.sog",
 ]) {
   if (!mainSource.includes(required)) {
     failures.push(`public viewer loading guard is missing: ${required}`);

@@ -1,0 +1,14 @@
+SpaceTake GS embedded reconstruction asset
+
+File: assets/x5-tunnel-mrnf-ppisp-sh3-4m97-aligned.sog
+Size: 67,111,473 bytes
+SHA-256: f1aaf327df2d68d4edb342da1bcf601d9ce32459eb4fdea1f6d2140da455fdef
+Content: 4,971,490 Gaussian splats, spherical harmonics degree 3
+
+Copyright (c) 2026 Jeprary. All rights reserved.
+
+This asset is made available for public viewing through the SpaceTake GS
+website. No license to copy, modify, redistribute, sublicense, sell, or use the
+asset for training is granted. The website source license does not apply to this
+asset. The source capture, source PLY, private paths, and conversion evidence are
+not included.

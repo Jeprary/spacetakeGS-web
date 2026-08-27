@@ -158,6 +158,8 @@ for (const required of [
   "/__spacetake-local-assets/x5-tunnel-mrnf-ppisp-sh1-4m-aligned.spark-2.1.0.spz",
   "/__spacetake-local-assets/x5-tunnel-mrnf-ppisp-sh3-4m97-aligned.spark-2.1.0.spz",
   "/__spacetake-local-assets/x5-tunnel-mrnf-ppisp-sh3-4m97-aligned.sog",
+  "assets/x5-tunnel-mrnf-ppisp-sh3-4m97-aligned.sog",
+  "bundledPublicSceneUrl.href",
   "lockedHuggingFaceAsset.test(publicScene.url)",
   'viewer === "supersplat"',
 ]) {
