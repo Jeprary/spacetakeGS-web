@@ -275,7 +275,12 @@ try {
   console.log(`Mobile runtime gate passed: ${JSON.stringify(results)}`);
 } finally {
   socket.close();
-  browser.kill();
+  if (browser.exitCode === null) {
+    const exited = new Promise((resolve) => browser.once("exit", resolve));
+    browser.kill("SIGTERM");
+    await Promise.race([exited, delay(2_000)]);
+    if (browser.exitCode === null) browser.kill("SIGKILL");
+  }
   server.close();
-  await rm(profile, { recursive: true, force: true });
+  await rm(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 100 });
 }
