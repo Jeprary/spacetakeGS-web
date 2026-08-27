@@ -16,6 +16,7 @@ public/reconstruction-preview.jpg
 public/site.webmanifest
 scripts/audit-public-source.mjs
 scripts/check-content.mjs
+scripts/check-mobile-runtime.mjs
 scripts/verify-dist.mjs
 src/index.html
 src/main.ts

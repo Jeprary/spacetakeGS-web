@@ -16,10 +16,11 @@
 html { width:100%; max-width:100%; overflow-x:hidden; scroll-behavior:smooth; background:var(--ink); }
 body { position:relative; width:100%; max-width:100%; margin:0; overflow-x:hidden; overscroll-behavior-x:none; color:var(--paper); background:var(--ink); line-height:1.5; }
 @supports (overflow:clip) {
-  html,body { overflow-x:clip; }
+  html,body,main { overflow-x:clip; }
 }
-main { width:100%; max-width:100%; overflow-x:hidden; }
+main { width:100%; max-width:100%; }
 img,svg,canvas,iframe { max-width:100%; }
+.site-header,.hero,.reveal-section,.viewer-intro,.site-footer { touch-action:pan-y; }
 a { color: inherit; text-decoration: none; }
 [hidden] { display: none !important; }
 .section-shell { width: min(var(--max), calc(100% - 56px)); margin-inline: auto; }
@@ -53,7 +54,7 @@ h1,h2 { margin: 0; font-weight: 430; letter-spacing: -.055em; line-height: .96; 
 .reveal-copy h2 { max-width:720px; font-size:clamp(2.8rem,5.4vw,5.8rem); }
 .viewer-section { position:relative; z-index:3; width:100%; padding-block:140px; background:var(--ink); }
 .viewer-intro { margin-bottom:4.5rem; }.viewer-intro h2 { font-size:clamp(3rem,5vw,5.4rem); }
-.viewer-shell { overflow:hidden; border:1px solid var(--line-strong); background:#000; }.viewer-stage { position:relative; min-height:620px; background:#000; }.viewer-stage canvas,.supersplat-frame { display:block; width:100%; height:100%; min-height:620px; }.supersplat-frame { border:0; background:#000; }
+.viewer-shell { overflow:hidden; overscroll-behavior:contain; touch-action:none; border:1px solid var(--line-strong); background:#000; }.viewer-stage { position:relative; min-height:620px; background:#000; }.viewer-stage canvas,.supersplat-frame { display:block; width:100%; height:100%; min-height:620px; touch-action:none; }.supersplat-frame { border:0; background:#000; }
 .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
 .site-footer { padding:2.2rem max(28px,calc((100% - var(--max))/2)); border-top:1px solid var(--line); font-size:.72rem; }.site-footer p { margin:0; }.footer-author { color:var(--paper); font-weight:600; }
 

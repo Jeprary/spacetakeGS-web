@@ -26,6 +26,8 @@ jobs:
         run: npm run audit:public
       - name: Build and verify the Pages artifact
         run: npm run build
+      - name: Verify real mobile viewport behavior
+        run: node scripts/check-mobile-runtime.mjs
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v4
         with:

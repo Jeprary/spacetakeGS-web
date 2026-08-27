@@ -104,7 +104,11 @@ if (
 for (const requiredResponsiveRule of [
   "html { width:100%; max-width:100%; overflow-x:hidden;",
   "body { position:relative; width:100%; max-width:100%; margin:0; overflow-x:hidden; overscroll-behavior-x:none;",
-  "main { width:100%; max-width:100%; overflow-x:hidden; }",
+  "html,body,main { overflow-x:clip; }",
+  "main { width:100%; max-width:100%; }",
+  ".site-header,.hero,.reveal-section,.viewer-intro,.site-footer { touch-action:pan-y; }",
+  ".viewer-shell { overflow:hidden; overscroll-behavior:contain; touch-action:none;",
+  ".viewer-stage canvas,.supersplat-frame { display:block; width:100%; height:100%; min-height:620px; touch-action:none; }",
   ".hero-line { display:block; white-space:nowrap; }",
   ".hero h1 { width:100%; font-size:clamp(2rem,12vw,4.5rem); }",
 ]) {
@@ -115,6 +119,10 @@ for (const requiredResponsiveRule of [
 
 if (/\b(?:50|100)vw\b/u.test(styles)) {
   throw new Error("src/styles.css must not use viewport-width full-bleed geometry");
+}
+
+if (/main\s*\{[^}]*overflow(?:-x)?:hidden/u.test(styles)) {
+  throw new Error("main must not become an overflow container because it breaks the sticky reveal");
 }
 
 if (
