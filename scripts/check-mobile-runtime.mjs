@@ -68,6 +68,7 @@ const chrome = chromeCandidates.find(
 if (!chrome) throw new Error("Chrome/Chromium is required for the mobile runtime gate");
 
 const profile = await mkdtemp(join(tmpdir(), "spacetake-mobile-chrome-"));
+const devtoolsPort = 9222;
 const browser = spawn(
   chrome,
   [
@@ -75,7 +76,10 @@ const browser = spawn(
     "--no-sandbox",
     "--disable-dev-shm-usage",
     "--disable-background-networking",
-    "--remote-debugging-port=0",
+    `--remote-debugging-port=${devtoolsPort}`,
+    "--remote-debugging-address=127.0.0.1",
+    "--no-first-run",
+    "--no-default-browser-check",
     `--user-data-dir=${profile}`,
     "about:blank",
   ],
@@ -88,22 +92,22 @@ browser.stderr.on("data", (chunk) => {
 });
 
 const delay = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds));
-const activePortPath = join(profile, "DevToolsActivePort");
-let devtoolsPort;
-for (let attempt = 0; attempt < 100; attempt += 1) {
+let devtoolsReady = false;
+for (let attempt = 0; attempt < 200; attempt += 1) {
   try {
-    const [port] = (await readFile(activePortPath, "utf8")).trim().split(/\r?\n/u);
-    devtoolsPort = Number(port);
-    if (Number.isSafeInteger(devtoolsPort) && devtoolsPort > 0) break;
+    const response = await fetch(`http://127.0.0.1:${devtoolsPort}/json/version`);
+    if (response.ok) {
+      devtoolsReady = true;
+      break;
+    }
   } catch {
     // Chrome has not exposed its debugging endpoint yet.
   }
-  if (browser.exitCode !== null) break;
   await delay(50);
 }
-if (!devtoolsPort) {
+if (!devtoolsReady) {
   browser.kill();
-  throw new Error(`Chrome did not expose DevToolsActivePort: ${browserStderr.trim()}`);
+  throw new Error(`Chrome did not expose its DevTools endpoint: ${browserStderr.trim()}`);
 }
 
 const target = await fetch(`http://127.0.0.1:${devtoolsPort}/json/new?${encodeURIComponent(pageUrl)}`, {
