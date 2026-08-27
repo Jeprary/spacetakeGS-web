@@ -223,7 +223,9 @@ try {
     await send("Runtime.evaluate", {
       expression: `(() => {
         const section = document.querySelector('.reveal-section');
-        window.scrollTo(0, section.offsetTop + section.offsetHeight * 0.3);
+        document.documentElement.style.scrollBehavior = 'auto';
+        const target = window.scrollY + section.getBoundingClientRect().top + section.offsetHeight * 0.3;
+        window.scrollTo({ top: target, left: 0, behavior: 'instant' });
       })()`,
     });
     await delay(100);
