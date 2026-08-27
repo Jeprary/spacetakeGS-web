@@ -39,7 +39,7 @@
 
     <header class="site-header" data-header>
       <a class="brand" href="#top" aria-label="SpaceTake GS home">
-        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span class="brand-mark" aria-hidden="true"></span>
         <span>SpaceTake <b>GS</b></span>
       </a>
     </header>
@@ -77,13 +77,15 @@
         </div>
       </section>
 
-      <section id="viewer" class="viewer-section section-shell" aria-labelledby="viewer-title">
-        <div class="viewer-intro">
-          <h2 id="viewer-title">Move through the captured space.</h2>
-        </div>
-        <div class="viewer-shell" data-viewer-shell aria-labelledby="viewer-title">
-          <div class="viewer-stage" data-viewer-stage aria-busy="true"></div>
-          <p class="sr-only" data-viewer-status aria-live="polite" aria-atomic="true"></p>
+      <section id="viewer" class="viewer-section" aria-labelledby="viewer-title">
+        <div class="section-shell">
+          <div class="viewer-intro">
+            <h2 id="viewer-title">Move through the captured space.</h2>
+          </div>
+          <div class="viewer-shell" data-viewer-shell aria-labelledby="viewer-title">
+            <div class="viewer-stage" data-viewer-stage aria-busy="true"></div>
+            <p class="sr-only" data-viewer-status aria-live="polite" aria-atomic="true"></p>
+          </div>
         </div>
       </section>
     </main>

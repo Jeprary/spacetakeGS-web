@@ -103,17 +103,27 @@ if (
 
 for (const requiredResponsiveRule of [
   "html { width:100%; max-width:100%; overflow-x:hidden;",
-  "body { width:100%; max-width:100%; margin:0; overflow-x:hidden;",
+  "body { position:relative; width:100%; max-width:100%; margin:0; overflow-x:hidden; overscroll-behavior-x:none;",
+  "main { width:100%; max-width:100%; overflow-x:hidden; }",
   ".hero-line { display:block; white-space:nowrap; }",
-  ".hero h1 { width:100%; font-size:clamp(2.2rem,12.8vw,4.5rem); }",
+  ".hero h1 { width:100%; font-size:clamp(2rem,12vw,4.5rem); }",
 ]) {
   if (!styles.includes(requiredResponsiveRule)) {
     throw new Error(`src/styles.css is missing the mobile overflow guard: ${requiredResponsiveRule}`);
   }
 }
 
-if (/\.reveal-section\s*\{[^}]*width:100vw/u.test(styles)) {
-  throw new Error("src/styles.css must not make the reveal track wider than the document");
+if (/\b(?:50|100)vw\b/u.test(styles)) {
+  throw new Error("src/styles.css must not use viewport-width full-bleed geometry");
+}
+
+if (
+  !html.includes('<span class="brand-mark" aria-hidden="true"></span>') ||
+  !styles.includes(
+    ".brand-mark { display:block; flex:0 0 auto; width:18px; height:18px; border:2px solid var(--accent); border-radius:50%; background:transparent; box-shadow:inset -4px -3px rgba(79,174,165,.2); }",
+  )
+) {
+  throw new Error("website header must reuse the desktop UI brand mark");
 }
 
 if (/reveal-caption|id="reconstruction-preview"/u.test(html)) {
@@ -144,7 +154,7 @@ if (/workflow-section|workflow-title|workflow-strip|method-section|method-title|
   throw new Error("src/index.html still contains a removed workflow or method section");
 }
 
-if (!/<\/section>\s*<section id="viewer" class="viewer-section section-shell"/u.test(html)) {
+if (!/<\/section>\s*<section id="viewer" class="viewer-section"/u.test(html)) {
   throw new Error("src/index.html must transition directly from the reveal into the viewer");
 }
 
