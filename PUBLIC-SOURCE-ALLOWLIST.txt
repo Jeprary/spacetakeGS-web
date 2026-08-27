@@ -1,0 +1,25 @@
+# Files eligible for a future clean standalone website repository.
+# Local checkpoint/provenance records and generated directories are excluded.
+.gitignore
+.github/workflows/deploy-pages.yml
+ASSETS.md
+LICENSE
+PUBLIC-SOURCE-ALLOWLIST.txt
+README.md
+package-lock.json
+package.json
+public/THIRD_PARTY.txt
+public/og.png
+public/reconstruction-preview.jpg
+public/site.webmanifest
+scripts/audit-public-source.mjs
+scripts/check-content.mjs
+scripts/verify-dist.mjs
+src/index.html
+src/main.ts
+src/supersplat-viewer.ts
+src/styles.css
+src/viewer.ts
+src/vite-env.d.ts
+tsconfig.json
+vite.config.ts

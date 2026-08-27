@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#070a0a" />
+    <meta
+      name="description"
+      content="SpaceTake GS turns panoramic capture into an inspectable Gaussian scene, processed locally on your own machine."
+    />
+    <meta property="og:title" content="SpaceTake GS — Capture a space. Keep it yours." />
+    <meta
+      property="og:description"
+      content="A local-first workflow for turning real spaces into inspectable Gaussian scenes."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="./og.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SpaceTake GS — Capture a space. Keep it yours." />
+    <meta
+      name="twitter:description"
+      content="A local-first workflow for turning real spaces into inspectable Gaussian scenes."
+    />
+    <meta name="twitter:image" content="./og.png" />
+    <link rel="manifest" href="./site.webmanifest" />
+    <title>SpaceTake GS — Capture a space. Keep it yours.</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header" data-header>
+      <a class="brand" href="#top" aria-label="SpaceTake GS home">
+        <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>SpaceTake <b>GS</b></span>
+      </a>
+    </header>
+
+    <main id="main">
+      <section id="top" class="hero section-shell" aria-labelledby="hero-title">
+        <h1 id="hero-title">Capture a space.<br /><em>Keep it yours.</em></h1>
+        <p class="hero-lede">
+          Turn panoramic capture into an inspectable Gaussian scene — processed locally
+          on your own machine.
+        </p>
+      </section>
+
+      <section
+        class="reveal-section"
+        data-reveal-section
+      >
+        <div class="reveal-sticky">
+          <div class="reveal-clipper">
+            <div class="reveal-media">
+              <img
+                data-reveal-image
+                src="./reconstruction-preview.jpg"
+                alt="A reconstructed indoor corridor with brick walls and large murals"
+              />
+            </div>
+          </div>
+          <div class="reveal-copy section-shell">
+            <p class="eyebrow"><span></span> REAL RECONSTRUCTION</p>
+            <h2>A real space, reconstructed.</h2>
+          </div>
+        </div>
+      </section>
+
+      <section id="viewer" class="viewer-section section-shell" aria-labelledby="viewer-title">
+        <div class="viewer-intro">
+          <h2 id="viewer-title">Move through the captured space.</h2>
+        </div>
+        <div class="viewer-shell" data-viewer-shell aria-labelledby="viewer-title">
+          <div class="viewer-stage" data-viewer-stage aria-busy="true"></div>
+          <p class="sr-only" data-viewer-status aria-live="polite" aria-atomic="true"></p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p class="footer-author">Created by Jeprary</p>
+    </footer>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

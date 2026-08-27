@@ -1,0 +1,26 @@
+{
+  "name": "@spacetake/public-website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.22.2"
+  },
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "check": "tsc --noEmit && node scripts/check-content.mjs",
+    "audit:public": "node scripts/audit-public-source.mjs",
+    "build": "npm run check && vite build && node scripts/verify-dist.mjs",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "dependencies": {
+    "@playcanvas/supersplat-viewer": "1.30.2",
+    "@sparkjsdev/spark": "2.1.0",
+    "three": "0.180.0"
+  },
+  "devDependencies": {
+    "@types/three": "0.180.0",
+    "typescript": "6.0.3",
+    "vite": "8.2.0"
+  }
+}

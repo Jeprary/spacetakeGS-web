@@ -1,0 +1,10 @@
+{
+  "name": "SpaceTake GS",
+  "short_name": "SpaceTake GS",
+  "description": "Local-first spatial reconstruction.",
+  "start_url": "/spacetakeGS-web/",
+  "scope": "/spacetakeGS-web/",
+  "display": "standalone",
+  "background_color": "#070a0a",
+  "theme_color": "#070a0a"
+}
