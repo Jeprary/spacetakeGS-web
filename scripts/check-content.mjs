@@ -31,6 +31,7 @@ const html = await readFile(new URL("../src/index.html", import.meta.url), "utf8
 const manifest = await readFile(new URL("../public/site.webmanifest", import.meta.url), "utf8");
 const mainSource = await readFile(new URL("../src/main.ts", import.meta.url), "utf8");
 const superSplatSource = await readFile(new URL("../src/supersplat-viewer.ts", import.meta.url), "utf8");
+const styles = await readFile(new URL("../src/styles.css", import.meta.url), "utf8");
 const viteConfig = await readFile(new URL("../vite.config.ts", import.meta.url), "utf8");
 for (const required of [
   "Capture a space.",
@@ -92,8 +93,27 @@ if ((html.match(/<h1\b/giu) ?? []).length !== 1) {
   throw new Error("src/index.html must contain exactly one semantic H1");
 }
 
-if (!html.includes("Capture a space.<br /><em>Keep it yours.</em>")) {
-  throw new Error("src/index.html must preserve the approved hero headline exactly");
+if (
+  !/<span class="hero-line">Capture a space\.<\/span>\s*<em class="hero-line">Keep it yours\.<\/em>/u.test(
+    html,
+  )
+) {
+  throw new Error("src/index.html must preserve the approved non-breaking hero lines exactly");
+}
+
+for (const requiredResponsiveRule of [
+  "html { width:100%; max-width:100%; overflow-x:hidden;",
+  "body { width:100%; max-width:100%; margin:0; overflow-x:hidden;",
+  ".hero-line { display:block; white-space:nowrap; }",
+  ".hero h1 { width:100%; font-size:clamp(2.2rem,12.8vw,4.5rem); }",
+]) {
+  if (!styles.includes(requiredResponsiveRule)) {
+    throw new Error(`src/styles.css is missing the mobile overflow guard: ${requiredResponsiveRule}`);
+  }
+}
+
+if (/\.reveal-section\s*\{[^}]*width:100vw/u.test(styles)) {
+  throw new Error("src/styles.css must not make the reveal track wider than the document");
 }
 
 if (/reveal-caption|id="reconstruction-preview"/u.test(html)) {
