@@ -221,7 +221,10 @@ try {
     });
 
     await send("Runtime.evaluate", {
-      expression: "window.scrollTo(0, window.innerHeight)",
+      expression: `(() => {
+        const section = document.querySelector('.reveal-section');
+        window.scrollTo(0, section.offsetTop + section.offsetHeight * 0.3);
+      })()`,
     });
     await delay(100);
     const reveal = await send("Runtime.evaluate", {
@@ -261,8 +264,8 @@ try {
       Math.abs(record.scaleAfter - record.scaleBefore) > 0.001 ||
       record.reveal.position !== "sticky" ||
       Math.abs(record.reveal.top) > 1 ||
-      record.reveal.scale <= 1.01 ||
-      record.reveal.copyOpacity < 0.5
+      record.reveal.scale <= 1.03 ||
+      record.reveal.copyOpacity < 0.9
     ) {
       throw new Error(`mobile runtime gate failed at ${width}px: ${JSON.stringify(record)}`);
     }
