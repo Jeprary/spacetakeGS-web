@@ -179,8 +179,8 @@ for (const required of [
   'renderViewerHtml',
   'defaultSettings("environment")',
   'contentFilename: "scene.sog"',
-  "initialCamera.position[1] = 0.75",
-  "initialCamera.target[1] = 0.75",
+  "initialCamera.position[1] = 0.45",
+  "initialCamera.target[1] = 0.45",
   'inlineCss: true',
   'inlineJs: true',
 ]) {

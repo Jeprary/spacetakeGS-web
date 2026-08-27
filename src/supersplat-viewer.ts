@@ -21,8 +21,8 @@ export async function mountSuperSplatViewer({ container, source, label, onStatus
   settings.background.color = [0, 0, 0];
   const initialCamera = settings.cameras[0]?.initial;
   if (!initialCamera) throw new Error("SuperSplat initial camera is unavailable.");
-  initialCamera.position[1] = 0.75;
-  initialCamera.target[1] = 0.75;
+  initialCamera.position[1] = 0.45;
+  initialCamera.target[1] = 0.45;
 
   const viewerBase = new URL(`${import.meta.env.BASE_URL}supersplat-viewer/`, window.location.origin);
   const viewerDocument = renderViewerHtml({
