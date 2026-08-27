@@ -34,8 +34,8 @@ const superSplatSource = await readFile(new URL("../src/supersplat-viewer.ts", i
 const viteConfig = await readFile(new URL("../vite.config.ts", import.meta.url), "utf8");
 for (const required of [
   "Capture a space.",
-  "REAL RECONSTRUCTION",
-  "A real space, reconstructed.",
+  "RECONSTRUCTION PREVIEW",
+  "A captured space, rebuilt in 3D.",
   "./reconstruction-preview.jpg",
   "Move through the captured space.",
   "Created by Jeprary",
@@ -57,6 +57,8 @@ for (const removed of [
   "Current status",
   "Download not available",
   "Public-use approval pending",
+  "REAL RECONSTRUCTION",
+  "A real space, reconstructed.",
   "release review",
   "Open local scene",
   "Viewer credits:",
@@ -110,7 +112,7 @@ if (!html.includes('class="reveal-clipper"') || html.includes("reveal-backdrop")
 }
 
 const revealCopy = html.match(/<div class="reveal-copy section-shell">([\s\S]*?)<\/div>/u)?.[1] ?? "";
-if (!revealCopy.includes("REAL RECONSTRUCTION") || !revealCopy.includes("A real space, reconstructed.")) {
+if (!revealCopy.includes("RECONSTRUCTION PREVIEW") || !revealCopy.includes("A captured space, rebuilt in 3D.")) {
   throw new Error("src/index.html must contain the approved minimal page-2 overlay copy");
 }
 if ((revealCopy.match(/<p\b/gu) ?? []).length !== 1) {
