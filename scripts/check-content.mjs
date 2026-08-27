@@ -39,6 +39,11 @@ for (const required of [
   "./reconstruction-preview.jpg",
   "Move through the captured space.",
   "Created by Jeprary",
+  'rel="preload"',
+  'href="./assets/x5-tunnel-mrnf-ppisp-sh3-4m97-aligned.sog"',
+  'as="fetch"',
+  'type="application/octet-stream"',
+  'crossorigin="anonymous"',
 ]) {
   if (!html.includes(required)) {
     throw new Error(`src/index.html is missing required public copy: ${required}`);
@@ -160,6 +165,7 @@ for (const required of [
   "/__spacetake-local-assets/x5-tunnel-mrnf-ppisp-sh3-4m97-aligned.sog",
   "assets/x5-tunnel-mrnf-ppisp-sh3-4m97-aligned.sog",
   "bundledPublicSceneUrl.href",
+  'initialScene?.viewer === "supersplat"',
   "lockedHuggingFaceAsset.test(publicScene.url)",
   'viewer === "supersplat"',
 ]) {

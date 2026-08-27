@@ -42,8 +42,10 @@ standalone public-source allowlist; no raw capture or private machine path is
 bundled.
 
 The embedded official SuperSplat Viewer begins loading the reviewed 4.97M SH3
-SOG reconstruction when it is within 700 px of the viewport and retains the
-package's Orbit/Fly controls. The SOG identity and public-display boundary are
+SOG reconstruction from the browser cache when it is within 700 px of the
+viewport and retains the package's Orbit/Fly controls. The document preloads
+the SOG and its viewer module from initial navigation while deferring WebGL
+initialization until the viewer approaches the viewport. The SOG identity and public-display boundary are
 recorded in `ASSETS.md` and `public/GAUSSIAN-ASSET-NOTICE.txt`; its source PLY
 and private evidence are not published. The existing SparkJS viewer remains a
 fallback for its supported local formats. A production override may use only a

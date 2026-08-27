@@ -113,6 +113,11 @@ const selectScene = () => {
   return { ...publicScene, viewer };
 };
 
+const initialScene = selectScene();
+if (initialScene?.viewer === "supersplat") {
+  void import("./supersplat-viewer");
+}
+
 const showEmptyViewer = () => {
   if (!stage || !status) return;
   stage.replaceChildren();
@@ -159,7 +164,7 @@ const loadSelectedScene = () => {
   if (publicSceneAttempted || !stage || !status) return;
   publicSceneAttempted = true;
 
-  const scene = selectScene();
+  const scene = initialScene;
   if (!scene) {
     showEmptyViewer();
     return;
