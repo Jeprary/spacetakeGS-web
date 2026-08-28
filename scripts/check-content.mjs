@@ -203,6 +203,17 @@ for (const requiredFullscreenStyle of [
   }
 }
 
+for (const requiredPortraitViewerStyle of [
+  "@media (max-width:620px) and (orientation:portrait) {",
+  ".viewer-stage { width:100%; aspect-ratio:9 / 16; height:auto; min-height:0; max-height:calc(100dvh - max(16px,env(safe-area-inset-top)) - max(16px,env(safe-area-inset-bottom))); margin-inline:auto; }",
+  ".viewer-stage canvas,.supersplat-frame { width:100%; height:100%; min-height:0; }",
+  ".viewer-stage:fullscreen,.viewer-stage[data-expanded-fullscreen] { aspect-ratio:auto; max-height:none; margin-inline:0; }",
+]) {
+  if (!styles.includes(requiredPortraitViewerStyle)) {
+    throw new Error(`src/styles.css is missing the portrait Viewer geometry: ${requiredPortraitViewerStyle}`);
+  }
+}
+
 if (/main\s*\{[^}]*overflow(?:-x)?:hidden/u.test(styles)) {
   throw new Error("main must not become an overflow container because it breaks the sticky reveal");
 }
