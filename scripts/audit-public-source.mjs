@@ -107,7 +107,12 @@ for (const [label, pattern] of [
   if (pattern.test(html)) failures.push(`${label} found in src/index.html`);
 }
 
-for (const relativePath of ["src/main.ts", "src/supersplat-viewer.ts", "src/viewer.ts"]) {
+for (const relativePath of [
+  "src/main.ts",
+  "src/supersplat-viewer.ts",
+  "src/viewer-fullscreen.ts",
+  "src/viewer.ts",
+]) {
   const source = await readFile(join(root, relativePath), "utf8");
   if (/(?:fetch\s*\(|XMLHttpRequest|sendBeacon\s*\()/u.test(source)) {
     failures.push(`network API found in ${relativePath}`);

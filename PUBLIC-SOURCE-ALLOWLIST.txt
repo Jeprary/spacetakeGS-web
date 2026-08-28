@@ -18,12 +18,14 @@ public/share-card-v2.png
 public/site.webmanifest
 scripts/audit-public-source.mjs
 scripts/check-content.mjs
+scripts/check-fullscreen-host.mjs
 scripts/generate-brand-assets.mjs
 scripts/check-mobile-runtime.mjs
 scripts/verify-dist.mjs
 src/index.html
 src/main.ts
 src/supersplat-viewer.ts
+src/viewer-fullscreen.ts
 src/styles.css
 src/viewer.ts
 src/vite-env.d.ts

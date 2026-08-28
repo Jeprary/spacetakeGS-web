@@ -5,6 +5,7 @@ const files = [
   "src/index.html",
   "src/main.ts",
   "src/supersplat-viewer.ts",
+  "src/viewer-fullscreen.ts",
   "src/viewer.ts",
   "src/styles.css",
   "scripts/generate-brand-assets.mjs",
@@ -37,6 +38,7 @@ const brandMark = await readFile(new URL("../public/brand-mark.svg", import.meta
 const brandGenerator = await readFile(new URL("./generate-brand-assets.mjs", import.meta.url), "utf8");
 const mainSource = await readFile(new URL("../src/main.ts", import.meta.url), "utf8");
 const superSplatSource = await readFile(new URL("../src/supersplat-viewer.ts", import.meta.url), "utf8");
+const fullscreenHostSource = await readFile(new URL("../src/viewer-fullscreen.ts", import.meta.url), "utf8");
 const styles = await readFile(new URL("../src/styles.css", import.meta.url), "utf8");
 const viteConfig = await readFile(new URL("../vite.config.ts", import.meta.url), "utf8");
 
@@ -162,6 +164,30 @@ for (const requiredResponsiveRule of [
 
 if (/\b(?:50|100)vw\b/u.test(styles)) {
   throw new Error("src/styles.css must not use viewport-width full-bleed geometry");
+}
+
+for (const requiredFullscreenHost of [
+  'frame.setAttribute("allowfullscreen", "")',
+  'event.source !== frame.contentWindow',
+  'event.data === "requestFullscreen"',
+  'event.data === "exitFullscreen"',
+  'container.requestFullscreen()',
+  'container.setAttribute("data-expanded-fullscreen", "")',
+  'fallbackExit.textContent = "Exit fullscreen"',
+]) {
+  if (!`${superSplatSource}\n${fullscreenHostSource}`.includes(requiredFullscreenHost)) {
+    throw new Error(`SuperSplat host is missing its constrained mobile fullscreen path: ${requiredFullscreenHost}`);
+  }
+}
+for (const requiredFullscreenStyle of [
+  ".viewer-stage[data-expanded-fullscreen] { position:fixed; z-index:1000; inset:0; width:100dvw; height:100dvh;",
+  "html.viewer-fullscreen-open body { position:fixed; top:var(--viewer-fullscreen-scroll-y);",
+  "html.viewer-fullscreen-open .viewer-section { z-index:1000; }",
+  ".viewer-fullscreen-exit { position:absolute;",
+]) {
+  if (!styles.includes(requiredFullscreenStyle)) {
+    throw new Error(`src/styles.css is missing the iOS-safe fullscreen fallback: ${requiredFullscreenStyle}`);
+  }
 }
 
 if (/main\s*\{[^}]*overflow(?:-x)?:hidden/u.test(styles)) {

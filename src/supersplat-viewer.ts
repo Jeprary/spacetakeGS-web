@@ -1,5 +1,6 @@
 import { renderViewerHtml } from "@playcanvas/supersplat-viewer";
 import { defaultSettings } from "@playcanvas/supersplat-viewer/settings";
+import { installViewerFullscreenHost } from "./viewer-fullscreen";
 
 interface ViewerOptions {
   container: HTMLElement;
@@ -10,12 +11,18 @@ interface ViewerOptions {
 
 export async function mountSuperSplatViewer({ container, source, label, onStatus }: ViewerOptions) {
   const frame = document.createElement("iframe");
+  const fallbackExit = document.createElement("button");
   frame.className = "supersplat-frame";
   frame.title = `${label} — official SuperSplat Viewer`;
   frame.loading = "eager";
   frame.referrerPolicy = "no-referrer";
   frame.setAttribute("allow", "fullscreen");
+  frame.setAttribute("allowfullscreen", "");
   frame.setAttribute("sandbox", "allow-scripts allow-same-origin allow-pointer-lock");
+  fallbackExit.className = "viewer-fullscreen-exit";
+  fallbackExit.type = "button";
+  fallbackExit.textContent = "Exit fullscreen";
+  fallbackExit.hidden = true;
 
   const settings = defaultSettings("environment");
   settings.background.color = [0, 0, 0];
@@ -37,6 +44,8 @@ export async function mountSuperSplatViewer({ container, source, label, onStatus
     inlineJs: true,
   });
 
+  const removeFullscreenHost = installViewerFullscreenHost(frame, container, fallbackExit);
+
   container.replaceChildren();
   const loaded = new Promise<void>((resolve, reject) => {
     frame.addEventListener("load", () => resolve(), { once: true });
@@ -44,13 +53,15 @@ export async function mountSuperSplatViewer({ container, source, label, onStatus
       once: true,
     });
   });
-  container.append(frame);
+  container.append(frame, fallbackExit);
   frame.srcdoc = viewerDocument;
   await loaded;
   onStatus(`${label} loaded in the official SuperSplat Viewer.`);
 
   return () => {
+    removeFullscreenHost();
     frame.srcdoc = "";
     frame.remove();
+    fallbackExit.remove();
   };
 }

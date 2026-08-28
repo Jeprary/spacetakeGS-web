@@ -9,7 +9,7 @@
   "scripts": {
     "brand:generate": "node scripts/generate-brand-assets.mjs",
     "dev": "vite --host 127.0.0.1",
-    "check": "tsc --noEmit && node scripts/check-content.mjs",
+    "check": "tsc --noEmit && node scripts/check-content.mjs && node scripts/check-fullscreen-host.mjs",
     "audit:public": "node scripts/audit-public-source.mjs",
     "build": "npm run check && vite build && node scripts/verify-dist.mjs",
     "preview": "vite preview --host 127.0.0.1"
