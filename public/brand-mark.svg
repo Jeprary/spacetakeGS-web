@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="brand-title">
+  <title id="brand-title">SpaceTake GS</title>
+  <circle cx="32" cy="32" r="24" fill="none" stroke="#4faea5" stroke-width="7"/>
+  <path d="M48 44a24 24 0 0 1-28 9" fill="none" stroke="#80d4ca" stroke-opacity=".28" stroke-width="7" stroke-linecap="round"/>
+</svg>

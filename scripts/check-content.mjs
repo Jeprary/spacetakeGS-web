@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 
 const files = [
@@ -6,6 +7,7 @@ const files = [
   "src/supersplat-viewer.ts",
   "src/viewer.ts",
   "src/styles.css",
+  "scripts/generate-brand-assets.mjs",
 ];
 
 const prohibited = [
@@ -31,7 +33,8 @@ const html = await readFile(new URL("../src/index.html", import.meta.url), "utf8
 const manifest = await readFile(new URL("../public/site.webmanifest", import.meta.url), "utf8");
 const appleTouchIcon = await readFile(new URL("../public/apple-touch-icon.png", import.meta.url));
 const shareCard = await readFile(new URL("../public/share-card-v2.png", import.meta.url));
-const favicon = await readFile(new URL("../public/favicon.svg", import.meta.url), "utf8");
+const brandMark = await readFile(new URL("../public/brand-mark.svg", import.meta.url), "utf8");
+const brandGenerator = await readFile(new URL("./generate-brand-assets.mjs", import.meta.url), "utf8");
 const mainSource = await readFile(new URL("../src/main.ts", import.meta.url), "utf8");
 const superSplatSource = await readFile(new URL("../src/supersplat-viewer.ts", import.meta.url), "utf8");
 const styles = await readFile(new URL("../src/styles.css", import.meta.url), "utf8");
@@ -49,8 +52,18 @@ if (JSON.stringify(pngDimensions(appleTouchIcon)) !== JSON.stringify({ width: 18
 if (JSON.stringify(pngDimensions(shareCard)) !== JSON.stringify({ width: 1200, height: 630 })) {
   throw new Error("public/share-card-v2.png must be exactly 1200x630");
 }
-for (const required of ['fill="#070a0a"', 'stroke="#4faea5"', 'stroke="#80d4ca"']) {
-  if (!favicon.includes(required)) throw new Error(`public/favicon.svg is missing website brand geometry: ${required}`);
+for (const required of ['viewBox="0 0 64 64"', 'stroke="#4faea5"', 'stroke="#80d4ca"']) {
+  if (!brandMark.includes(required)) throw new Error(`public/brand-mark.svg is missing website brand geometry: ${required}`);
+}
+for (const required of ['public", "brand-mark.svg"', 'apple-touch-icon', 'share-card-v2']) {
+  if (!brandGenerator.includes(required)) throw new Error(`brand asset generator is not bound to the canonical mark: ${required}`);
+}
+for (const [label, bytes, expected] of [
+  ["apple-touch-icon", appleTouchIcon, "51933fece33d2c94ab529f94cc027db2f31a92517f902d3e011ade9e653970cd"],
+  ["share-card-v2", shareCard, "fe2e518a7686a5c6335e39b965edc0ff8afe6b1ef471956ee0188267c7bd616c"],
+]) {
+  const actual = createHash("sha256").update(bytes).digest("hex");
+  if (actual !== expected) throw new Error(`${label} is not the reviewed canonical-brand derivative: ${actual}`);
 }
 for (const required of [
   "Capture a space.",
@@ -70,7 +83,7 @@ for (const required of [
   '<meta property="og:image:type" content="image/png" />',
   '<meta property="og:image:alt" content="SpaceTake GS circular brand mark" />',
   '<meta name="twitter:image" content="https://jeprary.github.io/spacetakeGS-web/share-card-v2.png" />',
-  '<link rel="icon" href="./favicon.svg" type="image/svg+xml" />',
+  '<link rel="icon" href="./brand-mark.svg" type="image/svg+xml" />',
   '<link rel="apple-touch-icon" href="./apple-touch-icon.png" sizes="180x180" />',
   '<link rel="canonical" href="https://jeprary.github.io/spacetakeGS-web/" />',
 ]) {
@@ -156,12 +169,12 @@ if (/main\s*\{[^}]*overflow(?:-x)?:hidden/u.test(styles)) {
 }
 
 if (
-  !html.includes('<span class="brand-mark" aria-hidden="true"></span>') ||
+  !html.includes('<img class="brand-mark" src="./brand-mark.svg" alt="" width="18" height="18" />') ||
   !styles.includes(
-    ".brand-mark { display:block; flex:0 0 auto; width:18px; height:18px; border:2px solid var(--accent); border-radius:50%; background:transparent; box-shadow:inset -4px -3px rgba(79,174,165,.2); }",
+    ".brand-mark { display:block; flex:0 0 auto; width:18px; height:18px; max-width:none; }",
   )
 ) {
-  throw new Error("website header must reuse the desktop UI brand mark");
+  throw new Error("website header must reference the canonical website brand mark");
 }
 
 if (/reveal-caption|id="reconstruction-preview"/u.test(html)) {
@@ -267,7 +280,7 @@ for (const required of [
 if (!viteConfig.includes('command === "build" ? "/spacetakeGS-web/" : "/"')) {
   throw new Error("vite.config.ts must keep the project-site production base and root local development base");
 }
-for (const required of ['"start_url": "/spacetakeGS-web/"', '"scope": "/spacetakeGS-web/"', '"src": "./favicon.svg"', '"sizes": "any"', '"type": "image/svg+xml"']) {
+for (const required of ['"start_url": "/spacetakeGS-web/"', '"scope": "/spacetakeGS-web/"', '"src": "./brand-mark.svg"', '"sizes": "any"', '"type": "image/svg+xml"']) {
   if (!manifest.includes(required)) throw new Error(`site.webmanifest is missing project-site metadata: ${required}`);
 }
 

@@ -23,8 +23,9 @@ the workflow must be explicitly dispatched after the reviewed source commit is
 present on `main`.
 
 The canonical and social-preview metadata use the published project-site URL.
-The favicon, Apple touch icon and social card all use the same circular teal
-brand mark as the desktop UI and website header.
+`public/brand-mark.svg` is the single editable website Logo source: the header,
+favicon and manifest reference it directly, while the Apple touch icon and
+social card are generated from it by `npm run brand:generate`.
 
 `PUBLIC-SOURCE-ALLOWLIST.txt` is the fail-closed candidate for a future clean
 standalone repository. Local checkpoint/provenance records, `node_modules/`,

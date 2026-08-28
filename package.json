@@ -7,6 +7,7 @@
     "node": ">=22.22.2"
   },
   "scripts": {
+    "brand:generate": "node scripts/generate-brand-assets.mjs",
     "dev": "vite --host 127.0.0.1",
     "check": "tsc --noEmit && node scripts/check-content.mjs",
     "audit:public": "node scripts/audit-public-source.mjs",
