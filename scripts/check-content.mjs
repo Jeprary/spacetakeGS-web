@@ -192,6 +192,21 @@ for (const requiredFullscreenHost of [
     throw new Error(`SuperSplat host is missing its constrained mobile fullscreen path: ${requiredFullscreenHost}`);
   }
 }
+
+for (const requiredViewerPresentation of [
+  "const viewerPresentationCss =",
+  "#viewerBranding,",
+  "#viewerTitle {",
+  "display: none !important;",
+  "headExtras: `<style data-spacetake-viewer-presentation>${viewerPresentationCss}</style>`,",
+]) {
+  if (!superSplatSource.includes(requiredViewerPresentation)) {
+    throw new Error(`SuperSplat host is missing its brand-free presentation rule: ${requiredViewerPresentation}`);
+  }
+}
+if (/#[\s]*controlsWrap[\s\S]{0,80}display:\s*none/iu.test(superSplatSource)) {
+  throw new Error("SuperSplat presentation rule must not hide Viewer controls");
+}
 for (const requiredFullscreenStyle of [
   ".viewer-stage[data-expanded-fullscreen] { position:fixed; z-index:1000; inset:0; width:100dvw; height:100dvh;",
   "html.viewer-fullscreen-open body { position:fixed; top:var(--viewer-fullscreen-scroll-y);",

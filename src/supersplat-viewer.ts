@@ -9,6 +9,13 @@ interface ViewerOptions {
   onStatus: (message: string) => void;
 }
 
+const viewerPresentationCss = `
+  #viewerBranding,
+  #viewerTitle {
+    display: none !important;
+  }
+`;
+
 export async function mountSuperSplatViewer({ container, source, label, onStatus }: ViewerOptions) {
   const frame = document.createElement("iframe");
   const fallbackExit = document.createElement("button");
@@ -40,6 +47,7 @@ export async function mountSuperSplatViewer({ container, source, label, onStatus
     },
     baseHref: viewerBase.href,
     backgroundColor: [0, 0, 0],
+    headExtras: `<style data-spacetake-viewer-presentation>${viewerPresentationCss}</style>`,
     inlineCss: true,
     inlineJs: true,
   });
