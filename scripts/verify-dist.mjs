@@ -46,6 +46,17 @@ async function walk(directory) {
 
 await walk(root);
 if (!paths.includes("index.html")) throw new Error("dist/index.html is missing");
+const builtHtml = await readFile(join(root, "index.html"), "utf8");
+for (const [label, pattern] of [
+  ["document title", /<title>SpaceTake GS<\/title>/u],
+  ["standard description", /<meta\s+name="description"\s+content="Capture a space\. Keep it yours\."\s*\/>/u],
+  ["Open Graph title", /<meta property="og:title" content="SpaceTake GS" \/>/u],
+  ["Open Graph description", /<meta\s+property="og:description"\s+content="Capture a space\. Keep it yours\."\s*\/>/u],
+  ["Twitter title", /<meta name="twitter:title" content="SpaceTake GS" \/>/u],
+  ["Twitter description", /<meta\s+name="twitter:description"\s+content="Capture a space\. Keep it yours\."\s*\/>/u],
+]) {
+  if (!pattern.test(builtHtml)) throw new Error(`dist/index.html has regressed concise sharing metadata: ${label}`);
+}
 if (!paths.includes(bundledGaussianPath)) throw new Error("bundled Gaussian artifact is missing");
 const bundledGaussianAbsolutePath = join(root, bundledGaussianPath);
 const bundledGaussianInfo = await stat(bundledGaussianAbsolutePath);

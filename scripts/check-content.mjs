@@ -94,6 +94,17 @@ for (const required of [
   }
 }
 
+for (const [label, pattern] of [
+  ["document title", /<title>SpaceTake GS<\/title>/u],
+  ["standard description", /<meta\s+name="description"\s+content="Capture a space\. Keep it yours\."\s*\/>/u],
+  ["Open Graph title", /<meta property="og:title" content="SpaceTake GS" \/>/u],
+  ["Open Graph description", /<meta\s+property="og:description"\s+content="Capture a space\. Keep it yours\."\s*\/>/u],
+  ["Twitter title", /<meta name="twitter:title" content="SpaceTake GS" \/>/u],
+  ["Twitter description", /<meta\s+name="twitter:description"\s+content="Capture a space\. Keep it yours\."\s*\/>/u],
+]) {
+  if (!pattern.test(html)) throw new Error(`src/index.html has regressed concise sharing metadata: ${label}`);
+}
+
 for (const removed of [
   "Private Local Alpha",
   "No public build",
@@ -126,6 +137,8 @@ for (const removed of [
   "Interactive scene",
   "Ready when the viewer enters the page.",
   "Please try again later.",
+  "SpaceTake GS — Capture a space. Keep it yours.",
+  "A local-first workflow for turning real spaces into inspectable Gaussian scenes.",
 ]) {
   if (html.includes(removed)) {
     throw new Error(`src/index.html still contains removed internal/status copy: ${removed}`);
