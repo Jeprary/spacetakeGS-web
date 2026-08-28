@@ -29,10 +29,29 @@ for (const file of files) {
 
 const html = await readFile(new URL("../src/index.html", import.meta.url), "utf8");
 const manifest = await readFile(new URL("../public/site.webmanifest", import.meta.url), "utf8");
+const appleTouchIcon = await readFile(new URL("../public/apple-touch-icon.png", import.meta.url));
+const shareCard = await readFile(new URL("../public/share-card-v2.png", import.meta.url));
+const favicon = await readFile(new URL("../public/favicon.svg", import.meta.url), "utf8");
 const mainSource = await readFile(new URL("../src/main.ts", import.meta.url), "utf8");
 const superSplatSource = await readFile(new URL("../src/supersplat-viewer.ts", import.meta.url), "utf8");
 const styles = await readFile(new URL("../src/styles.css", import.meta.url), "utf8");
 const viteConfig = await readFile(new URL("../vite.config.ts", import.meta.url), "utf8");
+
+const pngDimensions = (buffer) => {
+  if (buffer.length < 24 || buffer.subarray(0, 8).toString("hex") !== "89504e470d0a1a0a") {
+    throw new Error("public brand artwork must be a valid PNG");
+  }
+  return { width: buffer.readUInt32BE(16), height: buffer.readUInt32BE(20) };
+};
+if (JSON.stringify(pngDimensions(appleTouchIcon)) !== JSON.stringify({ width: 180, height: 180 })) {
+  throw new Error("public/apple-touch-icon.png must be exactly 180x180");
+}
+if (JSON.stringify(pngDimensions(shareCard)) !== JSON.stringify({ width: 1200, height: 630 })) {
+  throw new Error("public/share-card-v2.png must be exactly 1200x630");
+}
+for (const required of ['fill="#070a0a"', 'stroke="#4faea5"', 'stroke="#80d4ca"']) {
+  if (!favicon.includes(required)) throw new Error(`public/favicon.svg is missing website brand geometry: ${required}`);
+}
 for (const required of [
   "Capture a space.",
   "SCENE PREVIEW",
@@ -45,6 +64,15 @@ for (const required of [
   'as="fetch"',
   'type="application/octet-stream"',
   'crossorigin="anonymous"',
+  '<meta property="og:url" content="https://jeprary.github.io/spacetakeGS-web/" />',
+  '<meta property="og:image" content="https://jeprary.github.io/spacetakeGS-web/share-card-v2.png" />',
+  '<meta property="og:image:secure_url" content="https://jeprary.github.io/spacetakeGS-web/share-card-v2.png" />',
+  '<meta property="og:image:type" content="image/png" />',
+  '<meta property="og:image:alt" content="SpaceTake GS circular brand mark" />',
+  '<meta name="twitter:image" content="https://jeprary.github.io/spacetakeGS-web/share-card-v2.png" />',
+  '<link rel="icon" href="./favicon.svg" type="image/svg+xml" />',
+  '<link rel="apple-touch-icon" href="./apple-touch-icon.png" sizes="180x180" />',
+  '<link rel="canonical" href="https://jeprary.github.io/spacetakeGS-web/" />',
 ]) {
   if (!html.includes(required)) {
     throw new Error(`src/index.html is missing required public copy: ${required}`);
@@ -110,6 +138,8 @@ for (const requiredResponsiveRule of [
   ".viewer-shell { overflow:hidden; overscroll-behavior:contain; touch-action:none;",
   ".viewer-stage canvas,.supersplat-frame { display:block; width:100%; height:100%; min-height:620px; touch-action:none; }",
   ".hero-line { display:block; white-space:nowrap; }",
+  ".hero { position:relative; z-index:2; isolation:isolate; width:100%; min-height:100svh; background:var(--ink); }",
+  ".hero-content { display:flex; min-height:100svh; padding-top:150px; padding-bottom:90px; flex-direction:column; justify-content:center; align-items:flex-start; }",
   ".hero h1 { width:100%; font-size:clamp(2rem,12vw,4.5rem); }",
 ]) {
   if (!styles.includes(requiredResponsiveRule)) {
@@ -138,8 +168,12 @@ if (/reveal-caption|id="reconstruction-preview"/u.test(html)) {
   throw new Error("src/index.html still contains the superseded inset reveal");
 }
 
-if ((html.match(/class="hero section-shell"/gu) ?? []).length !== 1) {
-  throw new Error("src/index.html must contain one standalone opening hero");
+if ((html.match(/class="hero"/gu) ?? []).length !== 1 || (html.match(/class="hero-content section-shell"/gu) ?? []).length !== 1) {
+  throw new Error("src/index.html must contain one full-width opaque hero and one constrained hero content shell");
+}
+
+if (/og\.png/iu.test(html)) {
+  throw new Error("src/index.html must not reference the superseded atom social card");
 }
 
 if ((html.match(/data-reveal-section/gu) ?? []).length !== 1) {
@@ -233,7 +267,7 @@ for (const required of [
 if (!viteConfig.includes('command === "build" ? "/spacetakeGS-web/" : "/"')) {
   throw new Error("vite.config.ts must keep the project-site production base and root local development base");
 }
-for (const required of ['"start_url": "/spacetakeGS-web/"', '"scope": "/spacetakeGS-web/"']) {
+for (const required of ['"start_url": "/spacetakeGS-web/"', '"scope": "/spacetakeGS-web/"', '"src": "./favicon.svg"', '"sizes": "any"', '"type": "image/svg+xml"']) {
   if (!manifest.includes(required)) throw new Error(`site.webmanifest is missing project-site metadata: ${required}`);
 }
 

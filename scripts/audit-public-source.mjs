@@ -15,7 +15,7 @@ const allowlist = allowlistText
 const failures = [];
 const seen = new Set();
 let projectLicense;
-const textSuffixes = new Set([".css", ".html", ".js", ".json", ".md", ".mjs", ".ts", ".txt", ".webmanifest", ".yml"]);
+const textSuffixes = new Set([".css", ".html", ".js", ".json", ".md", ".mjs", ".svg", ".ts", ".txt", ".webmanifest", ".yml"]);
 const allowedSuffixes = new Set([...textSuffixes, ".jpg", ".png", ".sog"]);
 const bundledGaussianPath = "public/assets/x5-tunnel-mrnf-ppisp-sh3-4m97-aligned.sog";
 const bundledGaussianBytes = 67_111_473;

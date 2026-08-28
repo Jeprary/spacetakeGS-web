@@ -13,6 +13,7 @@ const mimeTypes = new Map([
   [".js", "text/javascript; charset=utf-8"],
   [".png", "image/png"],
   [".sog", "application/octet-stream"],
+  [".svg", "image/svg+xml"],
   [".webmanifest", "application/manifest+json"],
 ]);
 
@@ -177,10 +178,16 @@ try {
       expression: `new Promise((resolve) => requestAnimationFrame(() => {
         const root = document.documentElement;
         const body = document.body;
+        const hero = document.querySelector('.hero');
+        const heroContent = document.querySelector('.hero-content');
+        const revealSection = document.querySelector('.reveal-section');
+        const heroRect = hero.getBoundingClientRect();
+        const heroContentRect = heroContent.getBoundingClientRect();
         const lines = [...document.querySelectorAll('.hero-line')].map((line) => {
           const rect = line.getBoundingClientRect();
           return { left: rect.left, right: rect.right, width: rect.width, whiteSpace: getComputedStyle(line).whiteSpace };
         });
+        const initialTopElement = document.elementFromPoint(root.clientWidth / 2, Math.min(700, window.innerHeight * .75));
         window.scrollTo(200, 0);
         requestAnimationFrame(() => resolve({
           clientWidth: root.clientWidth,
@@ -188,7 +195,19 @@ try {
           bodyScrollWidth: body.scrollWidth,
           scrollX: window.scrollX,
           lines,
-          heroTouchAction: getComputedStyle(document.querySelector('.hero')).touchAction,
+          hero: {
+            left: heroRect.left,
+            right: heroRect.right,
+            width: heroRect.width,
+            height: heroRect.height,
+            background: getComputedStyle(hero).backgroundColor,
+            zIndex: Number(getComputedStyle(hero).zIndex),
+            contentLeft: heroContentRect.left,
+            contentRight: heroContentRect.right,
+            revealZIndex: Number(getComputedStyle(revealSection).zIndex),
+            initialTopIsReveal: Boolean(initialTopElement?.closest('.reveal-media, .reveal-clipper')),
+          },
+          heroTouchAction: getComputedStyle(hero).touchAction,
           viewerTouchAction: getComputedStyle(document.querySelector('.viewer-shell')).touchAction,
         }));
       }))`,
@@ -234,11 +253,13 @@ try {
       expression: `(() => {
         const sticky = document.querySelector('.reveal-sticky');
         const section = document.querySelector('.reveal-section');
+        const topElement = document.elementFromPoint(document.documentElement.clientWidth / 2, window.innerHeight / 2);
         return {
           position: getComputedStyle(sticky).position,
           top: sticky.getBoundingClientRect().top,
           scale: Number(getComputedStyle(section).getPropertyValue('--reveal-scale')),
           copyOpacity: Number(getComputedStyle(section).getPropertyValue('--copy-opacity')),
+          centerShowsReveal: Boolean(topElement?.closest('.reveal-sticky')),
         };
       })()`,
     });
@@ -261,13 +282,23 @@ try {
       value.bodyScrollWidth !== width ||
       value.scrollX !== 0 ||
       lineOverflow ||
+      Math.abs(value.hero.left) > 0.5 ||
+      Math.abs(value.hero.right - value.clientWidth) > 0.5 ||
+      Math.abs(value.hero.width - value.clientWidth) > 0.5 ||
+      value.hero.height < 843 ||
+      value.hero.background !== "rgb(7, 10, 10)" ||
+      value.hero.zIndex <= value.hero.revealZIndex ||
+      value.hero.contentLeft < -0.5 ||
+      value.hero.contentRight > value.clientWidth + 0.5 ||
+      value.hero.initialTopIsReveal ||
       value.heroTouchAction !== "pan-y" ||
       value.viewerTouchAction !== "none" ||
       Math.abs(record.scaleAfter - record.scaleBefore) > 0.001 ||
       record.reveal.position !== "sticky" ||
       Math.abs(record.reveal.top) > 1 ||
       record.reveal.scale <= 1.03 ||
-      record.reveal.copyOpacity < 0.9
+      record.reveal.copyOpacity < 0.9 ||
+      !record.reveal.centerShowsReveal
     ) {
       throw new Error(`mobile runtime gate failed at ${width}px: ${JSON.stringify(record)}`);
     }

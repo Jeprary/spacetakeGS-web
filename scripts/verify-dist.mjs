@@ -5,7 +5,7 @@ import { extname, join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../dist/", import.meta.url));
-const allowed = new Set([".html", ".css", ".js", ".jpg", ".png", ".sog", ".txt", ".webmanifest"]);
+const allowed = new Set([".html", ".css", ".js", ".jpg", ".png", ".sog", ".svg", ".txt", ".webmanifest"]);
 const bundledGaussianPath = "assets/x5-tunnel-mrnf-ppisp-sh3-4m97-aligned.sog";
 const bundledGaussianBytes = 67_111_473;
 const bundledGaussianSha256 = "f1aaf327df2d68d4edb342da1bcf601d9ce32459eb4fdea1f6d2140da455fdef";
@@ -35,7 +35,7 @@ async function walk(directory) {
     const info = await stat(path);
     totalBytes += info.size;
     paths.push(relativePath);
-    if ([".html", ".css", ".js", ".txt"].includes(suffix)) {
+    if ([".html", ".css", ".js", ".svg", ".txt"].includes(suffix)) {
       const text = await readFile(path, "utf8");
       for (const pattern of [/\/mnt\//i, /\/home\//i, /[A-Z]:\\\\[A-Za-z0-9._ -]{2,}\\\\/]) {
         if (pattern.test(text)) throw new Error(`Private path pattern in ${path}`);

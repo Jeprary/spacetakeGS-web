@@ -22,9 +22,9 @@ exact `Jeprary/spacetakeGS-web` project site. A push alone does not deploy it;
 the workflow must be explicitly dispatched after the reviewed source commit is
 present on `main`.
 
-The social-preview image uses a portable relative URL in this unpublished
-prototype. Set an owner-approved absolute public URL only when the final Pages
-domain is known and publication has been authorized.
+The canonical and social-preview metadata use the published project-site URL.
+The favicon, Apple touch icon and social card all use the same circular teal
+brand mark as the desktop UI and website header.
 
 `PUBLIC-SOURCE-ALLOWLIST.txt` is the fail-closed candidate for a future clean
 standalone repository. Local checkpoint/provenance records, `node_modules/`,
