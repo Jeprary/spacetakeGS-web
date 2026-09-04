@@ -68,11 +68,11 @@ for (const [label, bytes, expected] of [
   if (actual !== expected) throw new Error(`${label} is not the reviewed canonical-brand derivative: ${actual}`);
 }
 for (const required of [
-  "Capture a space.",
+  "Capture a space",
   "SCENE PREVIEW",
-  "A captured space, rebuilt in 3D.",
+  "A captured space, rebuilt in 3D",
   "./reconstruction-preview.jpg",
-  "Move through the captured space.",
+  "Move through the captured space",
   "Created by Jeprary",
   'rel="preload"',
   'href="./assets/x5-tunnel-mrnf-ppisp-sh3-4m97-aligned.sog"',
@@ -150,7 +150,7 @@ if ((html.match(/<h1\b/giu) ?? []).length !== 1) {
 }
 
 if (
-  !/<span class="hero-line">Capture a space\.<\/span>\s*<em class="hero-line">Keep it yours\.<\/em>/u.test(
+  !/<span class="hero-line">Capture a space<\/span>\s*<em class="hero-line">Keep it yours<\/em>/u.test(
     html,
   )
 ) {
@@ -263,7 +263,7 @@ if (!html.includes('class="reveal-clipper"') || html.includes("reveal-backdrop")
 }
 
 const revealCopy = html.match(/<div class="reveal-copy section-shell">([\s\S]*?)<\/div>/u)?.[1] ?? "";
-if (!revealCopy.includes("SCENE PREVIEW") || !revealCopy.includes("A captured space, rebuilt in 3D.")) {
+if (!revealCopy.includes("SCENE PREVIEW") || !revealCopy.includes("A captured space, rebuilt in 3D")) {
   throw new Error("src/index.html must contain the approved minimal page-2 overlay copy");
 }
 if ((revealCopy.match(/<p\b/gu) ?? []).length !== 1) {
@@ -280,7 +280,7 @@ if (!/<\/section>\s*<section id="viewer" class="viewer-section"/u.test(html)) {
 
 const viewerSection = html.match(/<section id="viewer"[\s\S]*?<\/section>/u)?.[0] ?? "";
 const viewerText = viewerSection.replace(/<[^>]+>/gu, " ").replace(/\s+/gu, " ").trim();
-if (viewerText !== "Move through the captured space.") {
+if (viewerText !== "Move through the captured space") {
   throw new Error(`src/index.html viewer must expose only its approved title; found: ${viewerText}`);
 }
 if (/viewer-toolbar|viewer-placeholder|viewer-kicker|mini-cloud|data-viewer-placeholder/u.test(viewerSection)) {
